@@ -522,8 +522,7 @@ public class NetworkTopology {
       }
     }
     if (numOfDatanodes <= 0) {
-      LOG.debug("Failed to find datanode (scope=\"{}\" excludedScope=\"{}\")."
-              + " numOfDatanodes={}",
+      LOG.debug("Failed to find datanode (scope=\"{}\" excludedScope=\"{}\"). numOfDatanodes={}",
           scope, excludedScope, numOfDatanodes);
       return null;
     }
@@ -539,10 +538,12 @@ public class NetworkTopology {
         netlock.readLock().unlock();
       }
     }
-    LOG.debug("Choosing random from {} available nodes on node {},"
-        + " scope={}, excludedScope={}, excludeNodes={}. numOfDatanodes={}.",
-        availableNodes, innerNode, scope, excludedScope, excludedNodes,
-        numOfDatanodes);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Choosing random from {} available nodes on node {}, scope={},"
+              + " excludedScope={}, excludeNodes={}. numOfDatanodes={}.",
+          availableNodes, innerNode, scope, excludedScope, excludedNodes,
+          numOfDatanodes);
+    }
     Node ret = null;
     if (availableNodes > 0) {
       ret = chooseRandom(innerNode, node, excludedNodes, numOfDatanodes,
@@ -1086,7 +1087,7 @@ public class NetworkTopology {
     String rackname = node.getNetworkLocation();
     Set<String> nodes = rackMap.get(rackname);
     if (nodes == null) {
-      nodes = new HashSet<String>();
+      nodes = new HashSet<>();
     }
     if (!decommissionNodes.contains(node.getName())) {
       nodes.add(node.getName());
